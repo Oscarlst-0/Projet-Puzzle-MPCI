@@ -171,7 +171,17 @@ def distance_matching_deux_pieces(piece1, piece2):
     return couple_match, distance_min
 
 
-def liste_bords_candidats(liste_pieces, type):
+def type_complementaire(type):
+    if type == "M":
+        type_complementaire = "F"
+    elif type == "F":
+        type_complementaire = "M"
+    else:
+        return None
+    return type_complementaire
+
+
+def liste_1bords_candidats(liste_pieces, type):
     candidats = []
     for piece in liste_pieces:
         liste_bord = piece["bord_types"]["bord"]
@@ -184,6 +194,28 @@ def liste_bords_candidats(liste_pieces, type):
     return candidats
 
 
+def liste_2bords_candidats(liste_pieces, couple_type):
+    type1, type2 = couple_type
+    couple_candidats = []
+    for piece in liste_pieces:
+        liste_bord = piece["bord_types"]["bord"]
+        liste_type = piece["bord_types"]["types"]
+        for i in range(4):
+            if (
+                liste_type[i] == type1 and liste_type[(i + 1) % 4] == type2
+            ):  # le modulo traite le cas des bords (4,1)
+                bords_tab = (
+                    coord_dictionnaire_into_tab(liste_bord[i]),
+                    coord_dictionnaire_into_tab(liste_bord[(i + 1) % 4]),
+                )
+                bords_norm = (
+                    normaliser_contour_complexe(bords_tab[0]),
+                    normaliser_contour_complexe(bords_tab[1]),
+                )
+                couple_candidats.append(bords_norm)
+    return couple_candidats
+
+
 def matching_1bord(bord, bords_candidats):
     bords_candidats.remove(bord)
     distance_min = 10000000
@@ -193,4 +225,27 @@ def matching_1bord(bord, bords_candidats):
         if distance_min > cout:
             distance_min = cout
             bord_match = bord_candidat
+    return bord_match, distance_min
+
+
+def matching_2bord(couple_bord, bords_candidats):
+    bord1, bord2 = couple_bord
+    bords_candidats.remove((bord1, bord2))
+    distance_min = 100000000
+    couple_bord_match = None
+    for couple_bords_candidats in bords_candidats:
+        couple_candidats_type_comp = (
+            type_complementaire(couple_bords_candidats[0]["bord_types"]["types"][0]),
+            type_complementaire(couple_bords_candidats[0]["bord_types"]["types"][1]),
+        )
+        couple_type_comp = (
+            type_complementaire(bord1["bord_types"]["types"][0]),
+            type_complementaire(bord2["bord_types"]["types"][1]),
+        )
+        if couple_candidats_type_comp == couple_type_comp:
+            cout1 = cout_min(bord1, couple_bords_candidats[0])
+            cout2 = cout_min(bord2, couple_bords_candidats[1])
+            if distance_min > cout1 + cout2:
+                distance_min = cout1 + cout2
+                bord_match = couple_bords_candidats
     return bord_match, distance_min

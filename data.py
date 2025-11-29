@@ -150,5 +150,3 @@ Piece2 = {
     },
 }
 
-# print(surechantillonage_interpol_np(conversion(lire_dictionnaire("Test/piece1.txt")))[2038])
-# list = np.array([[1,0],[1,1],[2,1],[2,2]])
