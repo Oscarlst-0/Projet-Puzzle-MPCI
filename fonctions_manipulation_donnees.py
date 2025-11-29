@@ -84,6 +84,10 @@ def affichage_2contour(contour1, contour2):
     plt.show()
 
 
+def affichage_DTW(contour1, contour2, path):
+    pass  # à finir
+
+
 def translation(contour):
     z = contour[:, 0] + 1j * contour[:, 1]
     zA = z[0]  # coord 1er point A
