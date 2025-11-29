@@ -247,5 +247,5 @@ def matching_2bord(couple_bord, bords_candidats):
             cout2 = cout_min(bord2, couple_bords_candidats[1])
             if distance_min > cout1 + cout2:
                 distance_min = cout1 + cout2
-                bord_match = couple_bords_candidats
-    return bord_match, distance_min
+                couple_bord_match = couple_bords_candidats
+    return couple_bord_match, distance_min
