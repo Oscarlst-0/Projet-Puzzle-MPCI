@@ -41,7 +41,7 @@ def affichage_2contour_renverse(contour, contour2):
 
 def affichage_2contour_renverse_normalisation(contour, contour2):
 
-    def echelle_contour2_sur_contour1(contour1, contour2):
+    def rescale_contour2_sur_contour1(contour1, contour2):
         # on adapte le contour2 à la taille du contour1
 
         L1 = abs(contour1[-1, 0] - contour1[0, 0])
@@ -51,7 +51,7 @@ def affichage_2contour_renverse_normalisation(contour, contour2):
         c2_scaled = contour2 * facteur
         return c2_scaled
 
-    contour2_rs = echelle_contour2_sur_contour1(contour, contour2)
+    contour2_rs = rescale_contour2_sur_contour1(contour, contour2)
 
     x1 = contour[:, 0]
     y1 = contour[:, 1]
@@ -96,7 +96,7 @@ def translation(contour):
     return contour_norm
 
 
-def normaliser_contour_complexe(contour):
+def normaliser_contour_complexe(contour):  # normalisation d'un contour
     # convertir en nombres complexes z = x + i*y
     z = contour[:, 0] + 1j * contour[:, 1]
     zA = z[0]  # coord 1er point A
@@ -110,13 +110,36 @@ def normaliser_contour_complexe(contour):
     theta = np.angle(v)  # calcul angle entre A et B
     z2 = z1 * np.exp(-1j * theta)
 
-    # # 3) translation pour avoir le milieu de AB à l'origine
-    # b = z2[-1].real  # coordonnée x de B
-    # z3 = z2 - b / 2.0  # on décale de b/2 vers la gauche
+    # 3) translation pour avoir le milieu de AB à l'origine
+    b = z2[-1].real  # coordonnée x de B
+    z3 = z2 - b / 2.0  # on décale de b/2 vers la gauche
 
-    contour_norm = np.array([z2.real, z2.imag]).T
+    contour_norm = np.array([z3.real, z3.imag]).T
 
     return contour_norm
+
+
+def normaliser_liste_contour_complexe(liste_contour):  # normalisation d'une liste
+    liste_contour_norm = []
+    for i in range(4):
+        z = liste_contour[i][:, 0] + 1j * liste_contour[i][:, 1]
+        zA = z[0]  # coord 1er point A
+        zB = z[-1]  # coord dernier point B
+
+        # translation pour ramener A à l'origine
+        z1 = z - zA
+
+        # rotation : AB sur l'axe x
+        v = zB - zA  # vecteur  AB
+        theta = np.angle(v)  # calcul angle entre A et B
+        z2 = z1 * np.exp(-1j * theta)
+
+        b = z2[-1].real  # coordonnée x de B
+        z3 = z2 - b / 2.0  # on décale de b/2 vers la gauche
+
+        contour_norm = np.array([z3.real, z3.imag]).T
+        liste_contour_norm.append(contour_norm)
+    return liste_contour_norm
 
 
 def distance_matching_deux_pieces(piece1, piece2):
@@ -126,25 +149,11 @@ def distance_matching_deux_pieces(piece1, piece2):
     liste_type1 = piece1["bord_types"]["types"]
     liste_type2 = piece2["bord_types"]["types"]
 
-    b0_1 = coord_dictionnaire_into_tab(liste_bord1[0])
-    b1_1 = coord_dictionnaire_into_tab(liste_bord1[1])
-    b2_1 = coord_dictionnaire_into_tab(liste_bord1[2])
-    b3_1 = coord_dictionnaire_into_tab(liste_bord1[3])
+    liste_tab_bord1 = [coord_dictionnaire_into_tab(liste_bord1[i]) for i in range(4)]
+    liste_tab_bord2 = [coord_dictionnaire_into_tab(liste_bord2[i]) for i in range(4)]
 
-    b0_2 = coord_dictionnaire_into_tab(liste_bord2[0])
-    b1_2 = coord_dictionnaire_into_tab(liste_bord2[1])
-    b2_2 = coord_dictionnaire_into_tab(liste_bord2[2])
-    b3_2 = coord_dictionnaire_into_tab(liste_bord2[3])
-
-    b0_1_norm = normaliser_contour_complexe(b0_1)
-    b1_1_norm = normaliser_contour_complexe(b1_1)
-    b2_1_norm = normaliser_contour_complexe(b2_1)
-    b3_1_norm = normaliser_contour_complexe(b3_1)
-
-    b0_2_norm = normaliser_contour_complexe(b0_2)
-    b1_2_norm = normaliser_contour_complexe(b1_2)
-    b2_2_norm = normaliser_contour_complexe(b2_2)
-    b3_2_norm = normaliser_contour_complexe(b3_2)
+    liste_tab_bord1_norm = normaliser_liste_contour_complexe(liste_tab_bord1)
+    liste_tab_bord2_norm = normaliser_liste_contour_complexe(liste_tab_bord2)
 
     distance_min = 10000000
     couple_match = (0, 0)
@@ -154,8 +163,9 @@ def distance_matching_deux_pieces(piece1, piece2):
             if (liste_type1[i] == "M" and liste_type2[j] == "F") or (
                 liste_type1[i] == "F" and liste_type2[j] == "M"
             ):
-                if distance_min > cout_min(liste_bord1[i], liste_bord2[j]):
-                    distance_min = cout_min(liste_bord1[i], liste_bord2[j])
+                cout = cout_min(liste_tab_bord1_norm[i], liste_tab_bord2_norm[j])
+                if distance_min > cout:
+                    distance_min = cout
                     couple_match = (i, j)
 
     return couple_match, distance_min
