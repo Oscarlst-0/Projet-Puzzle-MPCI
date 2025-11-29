@@ -169,3 +169,28 @@ def distance_matching_deux_pieces(piece1, piece2):
                     couple_match = (i, j)
 
     return couple_match, distance_min
+
+
+def liste_bords_candidats(liste_pieces, type):
+    candidats = []
+    for piece in liste_pieces:
+        liste_bord = piece["bord_types"]["bord"]
+        liste_type = piece["bord_types"]["types"]
+        for i in range(4):
+            if liste_type[i] == type:
+                bord_tab = coord_dictionnaire_into_tab(liste_bord[i])
+                bord_norm = normaliser_contour_complexe(bord_tab)
+                candidats.append(bord_norm)
+    return candidats
+
+
+def matching_1bord(bord, bords_candidats):
+    bords_candidats.remove(bord)
+    distance_min = 10000000
+    bord_match = None
+    for bord_candidat in bords_candidats:
+        cout = cout_min(bord, bord_candidat)
+        if distance_min > cout:
+            distance_min = cout
+            bord_match = bord_candidat
+    return bord_match, distance_min

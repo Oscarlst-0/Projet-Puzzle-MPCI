@@ -44,6 +44,77 @@ def surechantillonage_interpol_np(contour):
     return contour_echantillone
 
 
+def conversion_liste(dictionnaire):
+    liste_pieces = []
+    for predictions in dictionnaire["predictions"]:
+        couples = predictions["points"]
+        L = len(couples)
+        liste = np.empty((L, 2))
+        for k in range(L):
+            couple = couples[k]
+            liste[k, 0] = couple["x"]
+            liste[k, 1] = couple["y"]
+        liste_pieces.append(liste)
+    return liste_pieces
+
+
+def Pieces(
+    dictionnaire,
+    coin_a,
+    coin_b,
+    coin_c,
+    coin_d,
+    indice_coin_a,
+    indice_coin_b,
+    indice_coin_c,
+    indice_coin_d,
+    liste_indice_bord,
+    type_bord_1,
+    type_bord_2,
+    type_bord_3,
+    type_bord_4,
+):
+    liste_pieces = conversion_liste(dictionnaire)
+    liste_dict_pieces = []
+    for i, piece in enumerate(liste_pieces):
+        piece_dict = {
+            "contour": surechantillonage_interpol_np(piece),
+            "coins": np.array([coin_a[i], coin_b[i], coin_c[i], coin_d[i]]),
+            "indice_coins": np.array(
+                [indice_coin_a[i], indice_coin_b[i], indice_coin_c[i], indice_coin_d[i]]
+            ),
+            "bord_types": {
+                "bord": [
+                    surechantillonage_interpol_np(piece)[
+                        np.array(
+                            [liste_indice_bord[0], liste_indice_bord[1]],
+                            liste_indice_bord[2],
+                            liste_indice_bord[3],
+                        )[j] : np.array(
+                            [liste_indice_bord[0] + 1, liste_indice_bord[1]] + 1,
+                            liste_indice_bord[2] + 1,
+                            None,
+                        )[
+                            j
+                        ]
+                    ]
+                    for j in range(4)
+                ],
+                "types": [
+                    type_bord_1[i],
+                    type_bord_2[i],
+                    type_bord_3[i],
+                    type_bord_4[i],
+                ],
+            },
+        }
+        globals()[
+            f"Piece{i+1}"
+        ] = piece_dict  # permet de nommer Piece1, Piece2, ... dans le dict
+        liste_dict_pieces.append(piece_dict)
+    return liste_dict_pieces
+
+
 Piece1 = {
     "contour": surechantillonage_interpol_np(
         conversion(lire_dictionnaire("piece1.txt"))
