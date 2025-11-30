@@ -58,22 +58,7 @@ def conversion_liste(dictionnaire):
     return liste_pieces
 
 
-def Pieces(
-    dictionnaire,
-    coin_a,
-    coin_b,
-    coin_c,
-    coin_d,
-    indice_coin_a,
-    indice_coin_b,
-    indice_coin_c,
-    indice_coin_d,
-    liste_indice_bord,
-    type_bord_1,
-    type_bord_2,
-    type_bord_3,
-    type_bord_4,
-):
+def Pieces(dictionnaire):
     liste_pieces = conversion_liste(dictionnaire)
     liste_dict_pieces = []
     for i, piece in enumerate(liste_pieces):
@@ -149,4 +134,3 @@ Piece2 = {
         "types": ["B", "M", "F", "F"],
     },
 }
-
