@@ -58,7 +58,7 @@ def conversion_liste(dictionnaire):
     return liste_pieces
 
 
-def Pieces(dictionnaire):
+def Pieces(dictionnaire): #modifier la fonction pour qu'elle fasse appel à la fonction de Lois
     liste_pieces = conversion_liste(dictionnaire)
     liste_dict_pieces = []
     for i, piece in enumerate(liste_pieces):
