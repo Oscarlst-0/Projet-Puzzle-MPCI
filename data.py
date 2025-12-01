@@ -44,21 +44,25 @@ def surechantillonage_interpol_np(contour):
     return contour_echantillone
 
 
-def conversion_liste(dictionnaire):
+def conversion_liste(donnees):
+    bloc = donnees[0]["predictions"]
+    predictions_list = bloc["predictions"]
     liste_pieces = []
-    for predictions in dictionnaire["predictions"]:
-        couples = predictions["points"]
+    for pred in predictions_list:
+        couples = pred["points"]
         L = len(couples)
-        liste = np.empty((L, 2))
-        for k in range(L):
-            couple = couples[k]
-            liste[k, 0] = couple["x"]
-            liste[k, 1] = couple["y"]
-        liste_pieces.append(liste)
+        arr = np.empty((L, 2))
+        for k, p in enumerate(couples):
+            arr[k, 0] = p["x"]
+            arr[k, 1] = p["y"]
+        liste_pieces.append(arr)
+
     return liste_pieces
 
 
-def Pieces(dictionnaire): #modifier la fonction pour qu'elle fasse appel à la fonction de Lois
+def Pieces(
+    dictionnaire,
+):  # modifier la fonction pour qu'elle fasse appel à la fonction de Lois
     liste_pieces = conversion_liste(dictionnaire)
     liste_dict_pieces = []
     for i, piece in enumerate(liste_pieces):

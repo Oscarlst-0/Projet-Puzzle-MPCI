@@ -17,7 +17,7 @@ liste_bord2 = Piece2["bord_types"]["bord"]
 couple_match, distance_min = distance_matching_deux_pieces(Piece1, Piece2)
 print(couple_match, distance_min)
 
-affichage_2contour_renverse(
-    normaliser_contour_complexe(liste_bord1[couple_match[0]]),
-    normaliser_contour_complexe(liste_bord2[couple_match[1]]),
-)
+# affichage_2contour_renverse(
+#     normaliser_contour_complexe(liste_bord1[couple_match[0]]),
+#     normaliser_contour_complexe(liste_bord2[couple_match[1]]),
+# )
