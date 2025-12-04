@@ -108,7 +108,6 @@ def meilleurs_candidats_middle(ind_candidats, ecart_max=5):
     groupes_candidats.append(groupe)
 
     meilleurs = [groupe[len(groupe)//2] for groupe in groupes_candidats]
-
     return meilleurs
 
 
@@ -130,24 +129,16 @@ def meilleurs_coins(ind_candidats, r_piece, m):
         return ind_candidats
     while len(ind_candidats) > 4:
         worst = ind_candidats[0]
-        distance_worst = np.abs(r_piece[worst]
-                                - np.mean(np.array(
-                                    [r_piece[i]
-                                     for i in range(worst-eps,
-                                                    worst+eps)])))
+        indices = [(worst + k) % len(r_piece) for k in range(-eps, eps)]
+        distance_worst = np.abs(r_piece[worst] -
+                                np.mean([r_piece[i] for i in indices]))
         for candidat in ind_candidats:
-            if (np.abs(r_piece[candidat]
-                       - np.mean(np.array(
-                           [r_piece[i]
-                            for i in range(candidat - eps,
-                                           candidat+eps)])))
-               < distance_worst):
+            indices = [(candidat + k) % len(r_piece) for k in range(-eps, eps)]
+            distance_candidat = np.abs(r_piece[candidat] -
+                                       np.mean([r_piece[i] for i in indices]))
+            if (distance_candidat < distance_worst):
                 worst = candidat
-                distance_worst = np.abs(r_piece[worst]
-                                        - np.mean(np.array([r_piece[i]
-                                                            for i in range(
-                                                                worst-eps,
-                                                                worst+eps)])))
+                distance_worst = distance_candidat
         ind_candidats.remove(worst)
     return ind_candidats
 
