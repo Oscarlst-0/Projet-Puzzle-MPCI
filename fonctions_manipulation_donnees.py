@@ -253,3 +253,14 @@ def matching_2bord(couple_bord, bords_candidats):
                 distance_min = cout1 + cout2
                 couple_bord_match = couple_bords_candidats
     return couple_bord_match, distance_min
+
+
+def trouver_un_coin(Pieces):  # une piece deja bien mise en forme
+    for piece in Pieces:
+        compteur = 0
+        liste_types = piece["bord_types"]["types"]
+        for i in range(4):
+            if liste_types[i] == "D":
+                compteur += 1
+        if compteur == 2:
+            return piece
