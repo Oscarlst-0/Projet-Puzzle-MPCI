@@ -10,6 +10,7 @@ from fonctions_manipulation_donnees import (
     liste_2bords_candidats,
     matching_1bord,
     matching_2bord,
+    trouver_un_coin,
 )
 
 nom_fichier = "output_complique.json"
@@ -17,5 +18,7 @@ nom_fichier = "output_complique.json"
 donnees = lire_dictionnaire(nom_fichier)
 pieces = Pieces(donnees)
 
+coin_depart = trouver_un_coin(pieces)
+pieces.remove(coin_depart)
 
-print(piece1)
+while len(pieces) > 0:
