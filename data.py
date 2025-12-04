@@ -1,6 +1,7 @@
 import numpy as np
 import json
 from coins import coins
+from caracterisation_bord import caracterisation_bord
 
 
 def lire_dictionnaire(chemin_fichier):
