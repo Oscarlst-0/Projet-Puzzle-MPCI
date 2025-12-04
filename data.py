@@ -1,5 +1,6 @@
 import numpy as np
 import json
+from coins import coins
 
 
 def lire_dictionnaire(chemin_fichier):
@@ -66,11 +67,24 @@ def Pieces(
     liste_pieces = conversion_liste(dictionnaire)
     liste_dict_pieces = []
     for i, piece in enumerate(liste_pieces):
+        liste_indice_bord = coins(piece)
         piece_dict = {
             "contour": surechantillonage_interpol_np(piece),
-            "coins": np.array([coin_a[i], coin_b[i], coin_c[i], coin_d[i]]),
+            "coins": np.array(
+                [
+                    piece[liste_indice_bord[0]],
+                    piece[liste_indice_bord[1]],
+                    piece[liste_indice_bord[2]],
+                    piece[liste_indice_bord[3]],
+                ]
+            ),
             "indice_coins": np.array(
-                [indice_coin_a[i], indice_coin_b[i], indice_coin_c[i], indice_coin_d[i]]
+                [
+                    liste_indice_bord[0],
+                    liste_indice_bord[1],
+                    liste_indice_bord[2],
+                    liste_indice_bord[3],
+                ]
             ),
             "bord_types": {
                 "bord": [
