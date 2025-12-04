@@ -104,10 +104,18 @@ def Pieces(
                     for j in range(4)
                 ],
                 "types": [
-                    type_bord_1[i],
-                    type_bord_2[i],
-                    type_bord_3[i],
-                    type_bord_4[i],
+                    caracterisation_bord[
+                        piece, liste_indice_bord[0], liste_indice_bord[1]
+                    ],
+                    caracterisation_bord[
+                        piece, liste_indice_bord[1], liste_indice_bord[2]
+                    ],
+                    caracterisation_bord[
+                        piece, liste_indice_bord[2], liste_indice_bord[3]
+                    ],
+                    caracterisation_bord[
+                        piece, liste_indice_bord[3], liste_indice_bord[0]
+                    ],
                 ],
             },
         }
