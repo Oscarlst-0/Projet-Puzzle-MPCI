@@ -13,7 +13,7 @@ from fonctions_manipulation_donnees import (
     trouver_un_coin,
 )
 
-nom_fichier = "output_complique.json"
+nom_fichier = "data/output_complique.json"
 
 donnees = lire_dictionnaire(nom_fichier)
 pieces = Pieces(donnees)
