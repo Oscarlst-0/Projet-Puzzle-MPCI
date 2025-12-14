@@ -12,7 +12,18 @@ def lire_dictionnaire(chemin_fichier):
 
 
 def conversion(dictionnaire):
+    """ Convertit une structure de données précise en tableau de points.
 
+    Cette fonction extrait les coordonnées des points contenus dans un
+    dictionnaire de prédictions issu de ce que renvoie YOLO
+    et les convertit en un tableau NumPy de coordonnées (x, y).
+
+    Args:
+        dictionnaire (dict): structure contenant les prédictions
+
+    Returns:
+        ndarray: [N, 2] tableau des coordonnées (x, y) des points extraits
+    """
     predictions = dictionnaire["predictions"][0]
     couples = predictions["points"]
     L = len(couples)
