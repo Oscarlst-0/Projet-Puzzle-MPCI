@@ -12,7 +12,7 @@ from fonctions_manipulation_donnees import (
 
 if __name__ == "__main__":
 
-    donnees = lire_dictionnaire("output_complique.json")
+    donnees = lire_dictionnaire("data/output_complique.json")
     pieces = donnees[0]["predictions"]["predictions"]
 
     coins_listes = []
