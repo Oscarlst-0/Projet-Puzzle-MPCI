@@ -1,6 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
-from data import lire_dictionnaire
+from datas import lire_dictionnaire
 from coins import coins
 from fonctions_manipulation_donnees import (
     coord_dictionnaire_into_tab,
