@@ -1,5 +1,5 @@
 import matplotlib.pyplot as plt
-from data import lire_dictionnaire, conversion_liste
+from datas import lire_dictionnaire, conversion_liste
 from fonctions_manipulation_donnees import (
     affichage_contour,
     coord_dictionnaire_into_tab,
