@@ -6,9 +6,9 @@ from fonctions_manipulation_donnees import coord_dictionnaire_into_tab
 
 if __name__ == "__main__":
 
-    img = plt.imread("piece_scan.png")
+    img = plt.imread("data/piece_scan.png")
 
-    donnees = lire_dictionnaire("output_simple1.json")
+    donnees = lire_dictionnaire("data/output_simple1.json")
     bloc = donnees[0]["predictions"]
 
     img_w_json = bloc["image"]["width"]
