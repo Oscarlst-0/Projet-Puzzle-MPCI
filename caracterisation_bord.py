@@ -2,6 +2,20 @@ import numpy as np
 
 
 def angle_0_2pi(u, v):  # chatGPT
+    """ Calcule l’angle orienté entre deux vecteurs du plan, compris entre 0 et 2π.
+
+    Cette fonction détermine l’angle orienté permettant de passer du vecteur u
+    au vecteur v, en utilisant le produit scalaire et un équivalent du produit
+    vectoriel en dimension 2.
+
+    Args:
+        u (tuple | list | ndarray): [x, y] premier vecteur du plan
+        v (tuple | list | ndarray): [x, y] second vecteur du plan
+
+    Returns:
+        float: angle orienté entre u et v, exprimé en radians dans l’intervalle
+               [0, 2π[
+    """
     u = np.asarray(u)
     v = np.asarray(v)
 
