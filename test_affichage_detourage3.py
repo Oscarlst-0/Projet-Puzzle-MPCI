@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
-from data import lire_dictionnaire
+from datas import lire_dictionnaire
 from fonctions_manipulation_donnees import coord_dictionnaire_into_tab
 
 if __name__ == "__main__":
