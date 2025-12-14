@@ -1,4 +1,4 @@
-from data import Piece1, Piece2
+from datas import Piece1, Piece2
 from fonctions_manipulation_donnees import (
     coord_dictionnaire_into_tab,
     affichage_contour,
