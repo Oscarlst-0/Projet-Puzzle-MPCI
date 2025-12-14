@@ -1,5 +1,5 @@
 import numpy as np
-from donnee_puzzle import puzzle1
+from data.donnee_puzzle import puzzle1
 from coins import coins
 
 if __name__ == "__main__":
