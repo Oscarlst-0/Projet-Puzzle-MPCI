@@ -129,13 +129,13 @@ def Pieces(
 
 Piece1 = {
     "contour": surechantillonage_interpol_np(
-        conversion(lire_dictionnaire("piece1.txt"))
+        conversion(lire_dictionnaire("data/piece1.txt"))
     ),
     "coins": np.array([[225, 21], [15, 550], [553, 792], [794, 240]]),
     "indice_coins": np.array([1, 754, 1545, 2038]),
     "bord_types": {
         "bord": [
-            surechantillonage_interpol_np(conversion(lire_dictionnaire("piece1.txt")))[
+            surechantillonage_interpol_np(conversion(lire_dictionnaire("data/piece1.txt")))[
                 np.array([1, 754, 1545, 2038])[i] : np.array([755, 1546, 2039, None])[i]
             ]
             for i in range(4)
@@ -147,13 +147,13 @@ Piece1 = {
 
 Piece2 = {
     "contour": surechantillonage_interpol_np(
-        conversion(lire_dictionnaire("piece2.txt"))
+        conversion(lire_dictionnaire("data/piece2.txt"))
     ),
     "coins": np.array([[225, 191], [164, 301], [299, 380], [363, 270]]),
     "indice_coins": np.array([0, 136, 412, 654]),
     "bord_types": {
         "bord": [
-            surechantillonage_interpol_np(conversion(lire_dictionnaire("piece2.txt")))[
+            surechantillonage_interpol_np(conversion(lire_dictionnaire("data/piece2.txt")))[
                 np.array([0, 136, 412, 654])[i] : np.array([136, 412, 654, None])[i]
             ]
             for i in range(4)
