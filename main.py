@@ -2,7 +2,7 @@
 
 import numpy as np
 import matplotlib.pyplot as plt
-from data import lire_dictionnaire, Pieces
+from datas import lire_dictionnaire, Pieces
 from coins import coins
 from fonctions_manipulation_donnees import (
     coord_dictionnaire_into_tab,
