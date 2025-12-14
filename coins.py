@@ -4,6 +4,20 @@ import matplotlib.pyplot as plt
 
 
 def affiche_contour_coins(contour, ind_candidats):
+    """ Affiche le contour d’une pièce ainsi que les coins détectés.
+
+    Cette fonction trace le contour complet d’une pièce à partir de ses points
+    et superpose les points identifiés comme des coins, afin de visualiser le
+    résultat de l’algorithme de détection.
+
+    Args:
+        contour (ndarray): [N, 2] ensemble des points du contour de la pièce
+        ind_candidats (list | ndarray): [i] indices des points du contour
+                                        identifiés comme coins
+
+    Returns:
+        None
+    """
     x = contour[:, 0]
     y = contour[:, 1]
     coins = np.array([contour[i, :] for i in ind_candidats])
@@ -51,6 +65,19 @@ def upsample_linear(points, m, key_point_indices=[], loop=False):
 
 
 def extract_distance_from_center(points):
+    """ Calcule la distance radiale de chaque point à son centre moyen.
+
+    Cette fonction interprète les points du plan comme des nombres complexes,
+    calcule leur centre moyen, puis renvoie la distance de chaque point à ce
+    centre. Elle est notamment utilisée pour caractériser la forme d’un contour
+    indépendamment de sa position.
+
+    Args:
+        points (ndarray): [N, 2] ensemble des points du plan (x, y)
+
+    Returns:
+        ndarray: [N] distances de chaque point au centre moyen
+    """
     z = points[:, 0] + 1j * points[:, 1]
     z_mean = np.mean(z)
     r = np.sqrt(np.abs(z - z_mean) ** 2)
@@ -58,6 +85,21 @@ def extract_distance_from_center(points):
 
 
 def affiche_r(contour, r_piece, d_r):
+    """ Affiche le contour d’une pièce ainsi que la distance radiale et sa dérivée.
+
+    Cette fonction propose une visualisation en deux parties : le contour
+    géométrique de la pièce, puis l’évolution de la distance des points du
+    contour au centre moyen accompagnée de sa dérivée, afin d’analyser les
+    variations locales du contour.
+
+    Args:
+        contour (ndarray): [N, 2] ensemble des points du contour de la pièce
+        r_piece (ndarray): [N] distance de chaque point du contour au centre
+        d_r (ndarray): [N] dérivée discrète de la distance radiale
+
+    Returns:
+        None
+    """
 
     fig, ax = plt.subplots(2, 1, figsize=(10, 10))
 
@@ -144,6 +186,20 @@ def meilleurs_coins(ind_candidats, r_piece, m):
 
 
 def coins(contour):
+    """ Détecte les coins d’une pièce de puzzle à partir de son contour.
+
+    Cette fonction identifie les coins d’une pièce en analysant les variations
+    de la distance entre le contour et son centre. Les maxima locaux de cette
+    distance sont d’abord sélectionnés comme candidats, puis filtrés afin de
+    ne conserver que les véritables coins de la pièce. Des options d’affichage
+    permettent de vérifier visuellement les différentes étapes du traitement.
+
+    Args:
+        contour (ndarray): [N, 2] ensemble des points du contour de la pièce
+
+    Returns:
+        list: indices des points du contour correspondant aux coins détectés
+    """
     # commandes de vérification visuelle:
     affiche_verif_r = False
     affiche_verif_candidats = True
