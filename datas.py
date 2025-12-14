@@ -36,6 +36,20 @@ def conversion(dictionnaire):
 
 
 def surechantillonage_interpol_np(contour):
+    """ Rééchantillonne un contour par interpolation linéaire uniforme.
+
+    Cette fonction reconstruit un contour en augmentant le nombre de points
+    de manière à obtenir un échantillonnage spatial quasi uniforme le long
+    de l’abscisse curviligne. L’interpolation est réalisée séparément sur les
+    coordonnées x et y à l’aide des fonctions NumPy.
+
+    Args:
+        contour (ndarray): [N, 2] ensemble des points du contour initial
+
+    Returns:
+        ndarray: [M, 2] contour rééchantillonné avec des points régulièrement
+                 espacés le long du contour
+    """
     # Calculer la distance cumulative le long du contour, et le nombre de points
     direction = np.diff(contour, axis=0)
     distance_prochain = np.sqrt((direction**2).sum(axis=1))
@@ -58,6 +72,21 @@ def surechantillonage_interpol_np(contour):
 
 
 def conversion_liste(donnees):
+    """ Convertit une liste de prédictions en une liste de contours de pièces.
+
+    Cette fonction parcourt une structure de données contenant plusieurs
+    prédictions, extrait pour chacune la liste de points associée et construit
+    un tableau NumPy de coordonnées (x, y). Le résultat est une liste de
+    contours correspondant aux différentes pièces détectées.
+
+    Args:
+        donnees (list): structure contenant les données de prédictions, incluant
+                        plusieurs ensembles de points
+
+    Returns:
+        list[ndarray]: liste de tableaux [N_i, 2] représentant les contours des
+                       différentes pièces
+    """
     bloc = donnees[0]["predictions"]
     predictions_list = bloc["predictions"]
     liste_pieces = []
@@ -76,6 +105,23 @@ def conversion_liste(donnees):
 def Pieces(
     dictionnaire,
 ):  # modifier la fonction pour qu'elle fasse appel à la fonction de Lois
+    """ Construit une représentation structurée des pièces détectées.
+
+    Cette fonction transforme les données brutes issues des prédictions en une
+    liste de dictionnaires décrivant chaque pièce de puzzle. Pour chaque pièce,
+    le contour est rééchantillonné, les coins sont détectés, leurs indices sont
+    conservés, et chaque bord est extrait et caractérisé selon son type
+    (mâle, femelle ou droit). Les pièces sont également nommées dynamiquement.
+
+    Args:
+        dictionnaire (list | dict): structure contenant les prédictions des
+                                    contours des différentes pièces
+
+    Returns:
+        list[dict]: liste de dictionnaires décrivant chaque pièce, incluant
+                    le contour, les coins, les indices des coins et les
+                    caractéristiques des bords
+    """
     liste_pieces = conversion_liste(dictionnaire)
     liste_dict_pieces = []
     for i, piece in enumerate(liste_pieces):
