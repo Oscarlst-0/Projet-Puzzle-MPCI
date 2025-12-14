@@ -4,6 +4,20 @@ from DTW import cout_min
 
 
 def coord_dictionnaire_into_tab(points):
+    """ Convertit des coordonnées issues d’un dictionnaire en tableau NumPy.
+
+    Cette fonction prend en entrée soit un tableau NumPy de coordonnées, soit
+    une liste de dictionnaires contenant des clés "x" et "y". Dans ce dernier
+    cas, elle convertit les données en un tableau NumPy de coordonnées (x, y).
+
+    Args:
+        points (ndarray | list[dict]): coordonnées des points, soit déjà sous
+                                       forme de tableau NumPy, soit sous forme
+                                       de dictionnaires {"x": ..., "y": ...}
+
+    Returns:
+        ndarray: [N, 2] tableau des coordonnées (x, y)
+    """
     if isinstance(points, np.ndarray):
         return points
 
@@ -11,6 +25,17 @@ def coord_dictionnaire_into_tab(points):
 
 
 def affichage_contour(contour):
+    """ Affiche le contour d’une pièce à partir de ses coordonnées.
+
+    Cette fonction trace les points constituant le contour d’une pièce dans le
+    plan, afin de visualiser sa forme globale.
+
+    Args:
+        contour (ndarray): [N, 2] ensemble des points du contour de la pièce
+
+    Returns:
+        None
+    """
     x = contour[:, 0]
     y = contour[:, 1]
 
@@ -23,7 +48,19 @@ def affichage_contour(contour):
 
 
 def affichage_2contour_renverse(contour, contour2):
+    """ Affiche deux contours pour comparer un bord avec son renversement.
 
+    Cette fonction trace deux contours dans le plan : le premier tel quel,
+    et le second avec une inversion verticale, afin de visualiser la
+    correspondance entre un bord et son renversement.
+
+    Args:
+        contour (ndarray): [N, 2] premier contour à afficher
+        contour2 (ndarray): [M, 2] second contour, affiché avec renversement
+
+    Returns:
+        None
+    """
     x1 = contour[:, 0]
     y1 = contour[:, 1]
 
@@ -40,10 +77,30 @@ def affichage_2contour_renverse(contour, contour2):
 
 
 def affichage_2contour_renverse_normalisation(contour, contour2):
+    """ Affiche deux contours en comparant un bord avec son renversement normalisé.
 
+    Cette fonction compare deux contours en adaptant d’abord l’échelle du second
+    contour à celle du premier, puis en affichant le second avec une inversion
+    verticale. Elle permet ainsi de visualiser la similarité entre deux bords
+    indépendamment de leur taille.
+
+    Args:
+        contour (ndarray): [N, 2] contour de référence
+        contour2 (ndarray): [M, 2] contour à comparer, renversé et normalisé
+
+    Returns:
+        None
+    """
     def rescale_contour2_sur_contour1(contour1, contour2):
-        # on adapte le contour2 à la taille du contour1
+        """ Met à l’échelle le second contour pour l’adapter à la longueur du premier.
 
+        Args:
+            contour1 (ndarray): contour de référence
+            contour2 (ndarray): contour à mettre à l’échelle
+
+        Returns:
+            ndarray: contour2 redimensionné selon l’échelle de contour1
+        """
         L1 = abs(contour1[-1, 0] - contour1[0, 0])
         L2 = abs(contour2[-1, 0] - contour2[0, 0])
 
@@ -69,6 +126,19 @@ def affichage_2contour_renverse_normalisation(contour, contour2):
 
 
 def affichage_2contour(contour1, contour2):
+    """ Affiche deux contours afin de comparer leur forme.
+
+    Cette fonction trace deux contours dans le plan, permettant de visualiser
+    et comparer directement leur géométrie, par exemple avant ou après une
+    étape de normalisation.
+
+    Args:
+        contour1 (ndarray): [N, 2] premier contour à afficher
+        contour2 (ndarray): [M, 2] second contour à afficher
+
+    Returns:
+        None
+    """
     x1 = contour1[:, 0]
     y1 = contour1[:, 1]
 
@@ -89,6 +159,18 @@ def affichage_DTW(contour1, contour2, path):
 
 
 def translation(contour):
+    """ Translate un contour pour ramener son premier point à l’origine.
+
+    Cette fonction applique une translation au contour afin que son premier
+    point soit placé à l’origine du repère. Elle est utilisée pour normaliser
+    la position d’un contour indépendamment de sa localisation initiale.
+
+    Args:
+        contour (ndarray): [N, 2] ensemble des points du contour
+
+    Returns:
+        ndarray: [N, 2] contour translaté, avec le premier point à l’origine
+    """
     z = contour[:, 0] + 1j * contour[:, 1]
     zA = z[0]  # coord 1er point A
 
@@ -100,7 +182,20 @@ def translation(contour):
     return contour_norm
 
 
-def normaliser_contour_complexe(contour):  # normalisation d'un contour
+def normaliser_contour_complexe(contour):
+    """ Normalise un contour par translation et rotation dans le plan.
+
+    Cette fonction transforme un contour afin de le rendre invariant par
+    translation et rotation. Le premier point est ramené à l’origine, le
+    segment reliant le premier et le dernier point est aligné avec l’axe des
+    abscisses, puis le milieu de ce segment est centré à l’origine.
+
+    Args:
+        contour (ndarray): [N, 2] ensemble des points du contour initial
+
+    Returns:
+        ndarray: [N, 2] contour normalisé, invariant par translation et rotation
+    """
     # convertir en nombres complexes z = x + i*y
     z = contour[:, 0] + 1j * contour[:, 1]
     zA = z[0]  # coord 1er point A
@@ -123,7 +218,22 @@ def normaliser_contour_complexe(contour):  # normalisation d'un contour
     return contour_norm
 
 
-def normaliser_liste_contour_complexe(liste_contour):  # normalisation d'une liste
+def normaliser_liste_contour_complexe(liste_contour):
+    """ Normalise une liste de contours par translation et rotation.
+
+    Cette fonction applique une normalisation géométrique à chacun des contours
+    d’une liste. Pour chaque contour, le premier point est ramené à l’origine,
+    le segment reliant le premier au dernier point est aligné avec l’axe des
+    abscisses, puis le milieu de ce segment est centré à l’origine. Elle est
+    notamment utilisée pour comparer des bords indépendamment de leur position
+    et orientation.
+
+    Args:
+        liste_contour (list[ndarray]): liste de contours [N_i, 2] à normaliser
+
+    Returns:
+        list[ndarray]: liste des contours normalisés
+    """
     liste_contour_norm = []
     for i in range(4):
         z = liste_contour[i][:, 0] + 1j * liste_contour[i][:, 1]
@@ -147,6 +257,25 @@ def normaliser_liste_contour_complexe(liste_contour):  # normalisation d'une lis
 
 
 def distance_matching_deux_pieces(piece1, piece2):
+    """ Calcule la meilleure correspondance de bords entre deux pièces de puzzle.
+
+    Cette fonction compare les bords de deux pièces en tenant compte de leur
+    type (mâle ou femelle). Pour chaque paire de bords compatibles, les contours
+    sont normalisés puis comparés à l’aide d’un coût d’alignement minimal. La
+    fonction retourne la paire de bords la plus similaire ainsi que la distance
+    associée.
+
+    Args:
+        piece1 (dict): dictionnaire décrivant la première pièce, incluant ses
+                       bords et leurs types
+        piece2 (dict): dictionnaire décrivant la seconde pièce, incluant ses
+                       bords et leurs types
+
+    Returns:
+        tuple:
+            - tuple(int, int): indices des bords appariés (bord de piece1, bord de piece2)
+            - float: distance minimale correspondant au meilleur appariement
+    """
     liste_bord1 = piece1["bord_types"]["bord"]
     liste_bord2 = piece2["bord_types"]["bord"]
 
@@ -176,6 +305,18 @@ def distance_matching_deux_pieces(piece1, piece2):
 
 
 def type_complementaire(type):
+    """ Renvoie le type de bord complémentaire.
+
+    Cette fonction associe à un type de bord donné son complémentaire :
+    un bord mâle est associé à un bord femelle, et inversement. Les autres
+    types ne possèdent pas de complémentaire défini.
+
+    Args:
+        type (str): type du bord ("M" pour mâle, "F" pour femelle)
+
+    Returns:
+        str | None: type complémentaire ("F" ou "M"), ou None si non applicable
+    """
     if type == "M":
         type_complementaire = "F"
     elif type == "F":
@@ -186,6 +327,20 @@ def type_complementaire(type):
 
 
 def liste_1bords_candidats(liste_pieces, type):
+    """ Extrait et normalise les bords candidats d’un type donné.
+
+    Cette fonction parcourt une liste de pièces et sélectionne tous les bords
+    dont le type correspond au type demandé (mâle ou femelle). Chaque bord
+    sélectionné est converti en tableau de coordonnées puis normalisé afin de
+    faciliter les comparaisons ultérieures.
+
+    Args:
+        liste_pieces (list[dict]): liste de dictionnaires décrivant les pièces
+        type (str): type de bord recherché ("M" ou "F")
+
+    Returns:
+        list[ndarray]: liste des bords normalisés correspondant au type demandé
+    """
     candidats = []
     for piece in liste_pieces:
         liste_bord = piece["bord_types"]["bord"]
@@ -199,6 +354,22 @@ def liste_1bords_candidats(liste_pieces, type):
 
 
 def liste_2bords_candidats(liste_pieces, couple_type):
+    """ Extrait et normalise des couples de bords consécutifs candidats.
+
+    Cette fonction parcourt une liste de pièces et sélectionne les couples de
+    bords consécutifs dont les types correspondent au couple de types demandé.
+    Chaque bord est converti en tableau de coordonnées puis normalisé afin de
+    permettre des comparaisons géométriques indépendantes de la position et de
+    l’orientation.
+
+    Args:
+        liste_pieces (list[dict]): liste de dictionnaires décrivant les pièces
+        couple_type (tuple[str, str]): couple de types de bords recherchés
+                                       (par exemple ("M", "F"))
+
+    Returns:
+        list[tuple[ndarray, ndarray]]: liste de couples de bords normalisés
+    """
     type1, type2 = couple_type
     couple_candidats = []
     for piece in liste_pieces:
@@ -221,6 +392,22 @@ def liste_2bords_candidats(liste_pieces, couple_type):
 
 
 def matching_1bord(bord, bords_candidats):
+    """ Trouve le meilleur appariement pour un bord parmi une liste de candidats.
+
+    Cette fonction compare un bord donné à une liste de bords candidats à l’aide
+    d’un coût d’alignement minimal. Le bord identique à celui fourni est retiré
+    de la liste des candidats afin d’éviter une auto-correspondance. Le bord
+    présentant la distance minimale est retourné avec le coût associé.
+
+    Args:
+        bord (ndarray): contour normalisé du bord à apparier
+        bords_candidats (list[ndarray]): liste de contours normalisés candidats
+
+    Returns:
+        tuple:
+            - ndarray: bord candidat présentant la meilleure correspondance
+            - float: distance minimale associée à cet appariement
+    """
     bords_candidats.remove(bord)
     distance_min = 10000000
     bord_match = None
@@ -233,6 +420,23 @@ def matching_1bord(bord, bords_candidats):
 
 
 def matching_2bord(couple_bord, bords_candidats):
+    """ Trouve le meilleur appariement pour un couple de bords consécutifs.
+
+    Cette fonction compare un couple de bords donné à une liste de couples de
+    bords candidats. Seuls les couples dont les types sont complémentaires
+    sont considérés. Le coût total est calculé comme la somme des coûts
+    d’alignement minimal de chaque bord du couple. Le couple présentant le
+    coût total minimal est retourné.
+
+    Args:
+        couple_bord (tuple): couple de bords à apparier
+        bords_candidats (list[tuple]): liste de couples de bords candidats
+
+    Returns:
+        tuple:
+            - tuple: couple de bords candidats présentant la meilleure correspondance
+            - float: distance minimale associée à cet appariement
+    """
     bord1, bord2 = couple_bord
     bords_candidats.remove((bord1, bord2))
     distance_min = 100000000
@@ -255,7 +459,20 @@ def matching_2bord(couple_bord, bords_candidats):
     return couple_bord_match, distance_min
 
 
-def trouver_un_coin(Pieces):  # une piece deja bien mise en forme
+def trouver_un_coin(Pieces):
+    """ Identifie une pièce de coin parmi une liste de pièces.
+
+    Cette fonction parcourt une liste de pièces et recherche celle qui possède
+    exactement deux bords droits. Une telle configuration correspond à une
+    pièce de coin dans un puzzle.
+
+    Args:
+        Pieces (list[dict]): liste de dictionnaires décrivant les pièces du puzzle
+
+    Returns:
+        dict | None: dictionnaire correspondant à une pièce de coin si elle est
+                     trouvée, sinon None
+    """
     for piece in Pieces:
         compteur = 0
         liste_types = piece["bord_types"]["types"]
