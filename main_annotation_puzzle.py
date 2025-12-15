@@ -1,6 +1,7 @@
 import numpy as np
 from data.donnee_puzzle import puzzle1
 from coins import coins, upsample_linear
+from caracterisation_bord import caract_bords
 
 puzzle = puzzle_im1 # choisir quelle puzzle vous voulez annalyser.
 # Si les affichages de coins sont à True, vous pourrez vérifier le bon positionnement des coins, et les types de bords
@@ -17,7 +18,6 @@ def conversion(piece):
 
 if __name__ == "__main__":    
     pieces = puzzle[0]['predictions']['predictions']
-    print(len(pieces))
     coins_listes = []
     for piece in pieces:
         contour = upsample_linear(conversion(piece), 3*len(conversion(piece)), loop=True)
