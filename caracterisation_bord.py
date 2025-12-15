@@ -20,33 +20,33 @@ def angle_0_2pi(u, v):
     v = np.asarray(v)
 
     dot = np.dot(u, v)
-    cross = u[0]*v[1] - u[1]*v[0]   # équivalent au cross product 2D
+    cross = u[0]*v[1] - u[1]*v[0]
 
     angle = np.arctan2(cross, dot)   # angle signé entre -pi et pi
     angle = angle % (2*np.pi)        # on ramène entre 0 et 2pi
 
     return angle
 
+def caract_bords(coins, contour):
+    """définie le type de chaque bord du contour, un bord étant un segment du contour entre 2 coins
 
-def compare_mean():
-    return None
+    Args:
+        coins (_type_): nd array (4,1) des indices des coins dans le contour
+        contour (_type_): nd array(n, 2) de coordonnées de points. Il doit etre sur-échantilloner et périodique
 
-
-def caract_bords(coins, contour, h=1):
-    #  coins -> listes des 4 indices des coins dans le contour
-    #  contour : contour pas encore fermés
-    # renvoi  bords = [{"contour": contour du bord, "type" : type du bord},...]
-
+    Returns:
+        bords : ndarray (4,1) liste des 4 bords, qui sont des dictionnaires {"bords" = [points], "type": F, M ou D}
+    """
     # commandes de vérification visuelle:
     affiche = True
 
     # definitions des variables et périodisation de contour et coins:
 
-    np.sort(coins)
-    coins = np.append(coins, coins[0]+len(contour))
+    coins = np.sort(coins)
+    coins_period = np.append(coins, coins[0]+len(contour))
     contour = np.vstack([contour, contour[0:(coins[0]+1), :]])
 
-    bords = [{"bord": contour[coins[k]:coins[k+1]+1, :],
+    bords = [{"bord": contour[coins_period[k]:coins_period[k+1]+1, :],
               "type": None} for k in range(4)]
 
     for k in range(4):
@@ -81,31 +81,16 @@ def caract_bords(coins, contour, h=1):
             v_coin_point = point-coins1
             v_coin_H = np.dot(v_directeur, v_coin_point)*v_directeur
             proj = v_coin_point - v_coin_H
-            norme_proj = np.sqrt((proj**2).sum(axis=0))
-
-            # h<0 si vers l'interieur de la pièce -> proj et v_ortho meme signe
-            if v_ortho[0] != 0 and v_ortho[1] != 0:
-                if (int(np.sign((proj/v_ortho)[0])) == 1) and (
-                        int(np.sign((proj/v_ortho)[1])) == 1):
-                    h_points[i] = -norme_proj
-                else:
-                    h_points[i] = norme_proj
-            elif v_ortho[1] == 0:
-                if int(np.sign(proj[0]/v_ortho[0])) == 1:
-                    h_points[i] = -norme_proj
-                else:
-                    h_points[i] = norme_proj
-            else:
-                if int(np.sign(proj[1]/v_ortho[1])) == 1:
-                    h_points[i] = -norme_proj
-                else:
-                    h_points[i] = norme_proj
+            h_points[i] = np.dot(proj, v_ortho)
 
         # calcul de h_lim l'ecart max tolérable (à partir de l'écart-type)
-        h_lim = 3*np.std(np.abs(h_points[:len(h_points)//3]))
+        h_lim_max = max(np.max(h_points[:len(h_points)//5]),
+                        np.max(h_points[(4*len(h_points))//5:]))
+        h_lim_min = min(np.min(h_points[:len(h_points)//5]),
+                        np.min(h_points[(4*len(h_points))//5:]))
         if affiche:
-            print("bord", k, "lim", h_lim)
-            print("max", np.max(h_points), "mean", np.mean(h_points))
+            print("bord", k, "lim", h_lim_max, h_lim_min)
+            print("max", np.max(h_points), "min", np.min(h_points), "mean", np.mean(h_points))
 
         # comptage du nombre de point hors de cette limite
         n_inte = 0
@@ -113,19 +98,19 @@ def caract_bords(coins, contour, h=1):
         n_align = 0
 
         for h_i in h_points:
-            if h_i < -h_lim:
-                n_inte += 1
-            elif h_i > h_lim:
+            if h_i < h_lim_min:
                 n_exte += 1
+            elif h_i > h_lim_max:
+                n_inte += 1
             else:
                 n_align += 1
         if affiche:
             print("inte", n_inte, "exte", n_exte, "align", n_align, len(bord))
             print("")
-        if n_align >= 0.85*len(bord):
-            bords[k]["type"] = "D"
+        if n_inte > 0.2*len(bord):
+            bords[k]["type"] = "F"
         elif n_exte > 0.2*len(bord):
             bords[k]["type"] = "M"
         else:
-            bords[k]["type"] = "F"
+            bords[k]["type"] = "D"
     return bords
