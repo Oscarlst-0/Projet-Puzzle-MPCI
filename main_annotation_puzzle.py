@@ -1,6 +1,6 @@
 import numpy as np
 from data.donnee_puzzle import puzzle1
-from coins import coins
+from coins import coins, upsample_linear
 
 puzzle = puzzle_im1 # choisir quelle puzzle vous voulez annalyser.
 # Si les affichages de coins sont à True, vous pourrez vérifier le bon positionnement des coins, et les types de bords
