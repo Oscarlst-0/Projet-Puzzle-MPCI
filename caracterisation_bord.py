@@ -1,7 +1,7 @@
 import numpy as np
 
 
-def angle_0_2pi(u, v):  # chatGPT
+def angle_0_2pi(u, v):
     """ Calcule l’angle orienté entre deux vecteurs du plan, compris entre 0 et 2π.
 
     Cette fonction détermine l’angle orienté permettant de passer du vecteur u
